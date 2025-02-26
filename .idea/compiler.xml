@@ -10,16 +10,6 @@
         <module name="api-gateway" />
         <module name="config-server" />
       </profile>
-      <profile name="Annotation profile for product-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
-        </processorPath>
-        <module name="product-service" />
-        <module name="eureka_sv" />
-      </profile>
       <profile name="Annotation profile for shopping-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -30,6 +20,16 @@
         <module name="shopping-service" />
         <module name="cart-service" />
       </profile>
+      <profile name="Annotation profile for eureka sv" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
+        </processorPath>
+        <module name="product-service" />
+        <module name="eureka_sv" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="cities-service" target="17" />
@@ -37,13 +37,13 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="api-gateway" options="-parameters" />
-      <module name="cart-service" options="-parameters" />
+      <module name="api-gateway" options="" />
+      <module name="cart-service" options="" />
       <module name="cities-service" options="-parameters" />
-      <module name="config-server" options="-parameters" />
+      <module name="config-server" options="" />
       <module name="eureka_sv" options="-parameters" />
       <module name="product-service" options="-parameters" />
-      <module name="shopping-service" options="-parameters" />
+      <module name="shopping-service" options="" />
     </option>
   </component>
 </project>
