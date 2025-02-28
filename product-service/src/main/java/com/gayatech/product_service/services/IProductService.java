@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface IProductService {
 
-    public List<Product> getAll();
-    public Product getOneProduct(Long id);
-    public Product createProduct(ProductDTO productDTO);
-    public Product updateProduct(Long idUpdate, ProductDTO productDTO);
+    public List<ProductDTO> getAll();
+    public ProductDTO getOneProduct(Long id);
+    public ProductDTO createProduct(ProductDTO productDTO);
+    public ProductDTO updateProduct(Long idUpdate, ProductDTO productDTO);
     public void deleteProduct(Long id);
 
 }

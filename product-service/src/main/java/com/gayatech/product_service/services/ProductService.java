@@ -2,14 +2,13 @@ package com.gayatech.product_service.services;
 
 import com.gayatech.product_service.dtos.ProductDTO;
 import com.gayatech.product_service.exceptions.CustomException;
+import com.gayatech.product_service.modelmappers.ProductMapper;
 import com.gayatech.product_service.models.Product;
 import com.gayatech.product_service.repositories.IProductRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -18,69 +17,51 @@ public class ProductService implements IProductService{
     @Autowired
     private IProductRepository productRepository;
 
-    ModelMapper modelMapper = new ModelMapper();
+    @Autowired
+    private ProductMapper productMapper;
 
     @Override
-    public List<Product> getAll() {
-        try{
-            return productRepository.findAll();
-        } catch (Exception e){
-            throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<ProductDTO> getAll() {
+        List<Product> productList = productRepository.findAll();
+        return productMapper.convertToDTOList(productList);
     }
 
     @Override
-    public Product getOneProduct(Long id) {
-        try{
-            if (productRepository.existsById(id)){
-                return productRepository.findById(id).get();
-            }else {
-                throw new CustomException("Id not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e){
-            throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ProductDTO getOneProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new CustomException("Product ID not found", HttpStatus.NOT_FOUND));
+        return productMapper.convertToDTO(product);
     }
 
     @Override
     @Transactional
-    public Product createProduct(ProductDTO productDTO) {
-        try {
-            Product newProduct = modelMapper.map(productDTO, Product.class);
-
-            Product productSaved = productRepository.save(newProduct);
-            return productSaved;
-        } catch (Exception e){
-            throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ProductDTO createProduct(ProductDTO productDTO) {
+        Product newProduct = productMapper.convertToModel(productDTO);
+        Product productSaved = productRepository.save(newProduct);
+        return productMapper.convertToDTO(productSaved);
     }
 
     @Override
     @Transactional
-    public Product updateProduct(Long idUpdate, ProductDTO productDTO) {
-        try{
-            if (productRepository.existsById(idUpdate)){
-                this.createProduct(productDTO);
-                return this.getOneProduct(idUpdate);
-            }else {
-                throw new CustomException("Id not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e){
-            throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ProductDTO updateProduct(Long idUpdate, ProductDTO productDTO) {
+        Product existingProduct = productRepository.findById(idUpdate)
+                .orElseThrow(() -> new CustomException("Product ID not found", HttpStatus.NOT_FOUND));
+
+        existingProduct.setName(productDTO.getName());
+        existingProduct.setPrice(productDTO.getPrice());
+        existingProduct.setBrand(productDTO.getBrand());
+        existingProduct.setCode(productDTO.getCode());
+
+        Product updatedProduct = productRepository.save(existingProduct);
+        return productMapper.convertToDTO(updatedProduct);
     }
 
     @Override
     @Transactional
     public void deleteProduct(Long id) {
-        try{
-            if(productRepository.existsById(id)){
-                productRepository.deleteById(id);
-            }else {
-                throw new CustomException("Id not found", HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e){
-            throw new CustomException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!productRepository.existsById(id)) {
+            throw new CustomException("Product ID not found", HttpStatus.NOT_FOUND);
         }
+        productRepository.deleteById(id);
     }
 }
