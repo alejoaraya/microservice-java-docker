@@ -26,6 +26,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getOneProduct(id));
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<ProductDTO>> getListByListId(@RequestBody List<Long> longList){
+        return ResponseEntity.ok(productService.getListProductByListID(longList));
+    }
+
     @PostMapping("/")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO){
         ProductDTO newProduct = productService.createProduct(productDTO);
@@ -38,7 +43,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

@@ -14,5 +14,6 @@ public interface IProductService {
     public ProductDTO createProduct(ProductDTO productDTO);
     public ProductDTO updateProduct(Long idUpdate, ProductDTO productDTO);
     public void deleteProduct(Long id);
+    public List<ProductDTO> getListProductByListID(List<Long> longList);
 
 }

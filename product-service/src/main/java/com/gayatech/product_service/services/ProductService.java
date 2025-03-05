@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService{
@@ -19,6 +20,8 @@ public class ProductService implements IProductService{
 
     @Autowired
     private ProductMapper productMapper;
+
+
 
     @Override
     public List<ProductDTO> getAll() {
@@ -63,5 +66,13 @@ public class ProductService implements IProductService{
             throw new CustomException("Product ID not found", HttpStatus.NOT_FOUND);
         }
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductDTO> getListProductByListID(List<Long> longList) {
+        List<Product> productList = productRepository.findAllById(longList);
+        return productList.stream()
+                .map(product -> productMapper.convertToDTO(product))
+                .collect(Collectors.toList());
     }
 }
