@@ -1,9 +1,11 @@
 package com.gayatech.cart_service.exceptions;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import org.springframework.http.HttpStatus;
 
-@Data
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ErrorDTO {
     private String message;

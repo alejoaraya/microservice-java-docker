@@ -1,5 +1,6 @@
 package com.gayatech.product_service.controllers;
 
+import com.gayatech.product_service.dtos.CartRequestDTO;
 import com.gayatech.product_service.dtos.ProductDTO;
 import com.gayatech.product_service.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ProductDTO>> getListByListId(@RequestBody List<Long> longList){
-        return ResponseEntity.ok(productService.getListProductByListID(longList));
+    public ResponseEntity<List<ProductDTO>> getListByListId(@RequestBody CartRequestDTO cartRequestDTO){
+        return ResponseEntity.ok(productService.getListProductByListID(cartRequestDTO.getIdProductList()));
     }
 
     @PostMapping("/")
