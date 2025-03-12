@@ -16,7 +16,7 @@ public interface IProductRepository {
     @GetMapping("/api/products/{id}")
     public ProductDTO getProductById(@PathVariable Long id);
 
-    @PostMapping("/api/products/list")
+    @GetMapping("/api/products/list")
     public List<ProductDTO> getListProductsByListId(@RequestBody CartRequestDTO cartRequestDTO);
 
 }
