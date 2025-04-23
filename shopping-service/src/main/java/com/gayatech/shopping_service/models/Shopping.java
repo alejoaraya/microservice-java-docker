@@ -18,9 +18,7 @@ public class Shopping {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date deliveryDate;
-
-    @ElementCollection
-    private Cart cart;
+    private Long cartId;
 
 
 }

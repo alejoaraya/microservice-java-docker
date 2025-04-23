@@ -16,8 +16,9 @@ import java.util.Date;
 @AllArgsConstructor @NoArgsConstructor
 public class ShoppingDTO {
 
-    private Long id;
+
     private Date deliveryDate;
+    private Long cartId;
 
 
 }

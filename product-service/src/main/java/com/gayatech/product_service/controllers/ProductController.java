@@ -27,7 +27,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getOneProduct(id));
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public ResponseEntity<List<ProductDTO>> getListByListId(@RequestBody CartRequestDTO cartRequestDTO){
         return ResponseEntity.ok(productService.getListProductByListID(cartRequestDTO.getIdProductList()));
     }

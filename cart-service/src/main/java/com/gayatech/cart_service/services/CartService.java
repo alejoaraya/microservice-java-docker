@@ -33,10 +33,13 @@ public class CartService implements ICartService{
     @Retry(name = "product-service")
     public List<CartResponseDTO> getAll() {
         //Obtenemos los Carts
+        System.out.println("GET ALL");
         List<Cart> cartList = repoCart.findAll();
 
+        System.out.println("DTO");
         List<CartResponseDTO> cartResponseDTOSList = new ArrayList<>();
 
+        System.out.println("GET PRODUCTS ID LIST");
         //obtenemos por Cart la lista de longs de productos
         cartList.forEach(cart -> {
                     //le pasamos a products-service cada lista de longs para obtener la lista de productos
@@ -47,6 +50,7 @@ public class CartService implements ICartService{
                     cartResponseDTOSList.add(cartDTO);
                 });
 
+        System.out.println("RETURN");
         //retornar el list de CartDTOs
         return cartResponseDTOSList;
     }
@@ -67,22 +71,31 @@ public class CartService implements ICartService{
 
     @Override
     @Transactional
-    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackResponseCart")
+    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackCreateCart")
     @Retry(name = "product-service")
     public CartResponseDTO createCart(CartRequestDTO cartRequestDTO) {
         //convertimos el DTO en Model y lo mandamos a guardar
+        System.out.println("CREATE DTO");
         Cart cart = repoCart.save(new Cart(null, cartRequestDTO.getIdProductList()));
-
+        System.out.println(cart.getIdProductList());
+        System.out.println("SEARCH PRODUCTS");
         //buscamos la lista de productos llamando al "products-service" mandando la lista de longs
         List<ProductDTO> productDTOList = repoProduct.getListProductsByListId(new CartRequestDTO(cart.getIdProductList()));
+//        List<ProductDTO> productDTOList = List.of(
+//                new ProductDTO(2L, "P001", "Laptop Gamer", "ASUS", 1500.99),
+//                new ProductDTO(3L, "P002", "Smartphone", "Samsung", 799.99),
+//                new ProductDTO(4L, "P003", "Auriculares Bluetooth", "Sony", 199.99)
+//        );
 
+        productDTOList.forEach(System.out::println);
+        System.out.println("CREATE CART WITH PRODUCTS");
         //definimos el CartResponseDTO con el id del Cart guardado y la lista de productos
         return new CartResponseDTO(cart.getId(), productDTOList);
     }
 
     @Override
     @Transactional
-    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackResponseCart")
+    @CircuitBreaker(name = "product-service", fallbackMethod = "fallbackUpdateCart")
     @Retry(name = "product-service")
     public CartResponseDTO updateCart(Long idUpdate, CartRequestDTO cartRequestDTO) {
         //Buscamos el Cart y si no lo encuentra lanza exception custom manejada por controller advice
@@ -116,19 +129,31 @@ public class CartService implements ICartService{
         return new CartResponseDTO(cart.getId(), productDTOList);
     }
 
-    public void fallbackResponseListCart(List<Cart> cartList, Exception e){
-        List<CartResponseDTO> cartResponseDTOList = new ArrayList<>();
-        cartList.forEach(cart -> {
-                   CartResponseDTO cartResponseDTO = getCartResponseDTO(cart);
-                   cartResponseDTOList.add(cartResponseDTO);
-                });
+    public List<CartResponseDTO> fallbackResponseListCart( Throwable e){
+//        List<CartResponseDTO> cartResponseDTOList = ;
+//        cartList.forEach(cart -> {
+//                   CartResponseDTO cartResponseDTO = getCartResponseDTO(cart);
+//                   cartResponseDTOList.add(cartResponseDTO);
+//                });
 
-        throw new PartialContentException(cartResponseDTOList);
+        return new ArrayList<>();
     }
 
-    public void fallbackResponseCart(Cart cart, Exception e){
-        CartResponseDTO cartResponseDTO = getCartResponseDTO(cart);
-        throw new PartialContentException(cartResponseDTO);
+    public CartResponseDTO fallbackCreateCart(CartRequestDTO cartRequestDTO, Throwable e){
+        System.out.println("FALLBACK → createCart");
+//        CartResponseDTO cartResponseDTO = getCartResponseDTO(cartRequestDTO);
+        return new CartResponseDTO(null, new ArrayList<>());
+//        throw new PartialContentException(cartRequestDTO);
+    }
+
+    public CartResponseDTO fallbackUpdateCart(Long idUpdate, CartRequestDTO cartRequestDTO, Throwable e){
+        System.out.println("FALLBACK → updateCart");
+
+//        System.out.println(cart);
+        return new CartResponseDTO(idUpdate, new ArrayList<>());
+
+//        CartResponseDTO cartResponseDTO = getCartResponseDTO(cart);
+//        throw new PartialContentException(cartResponseDTO);
     }
 
 }

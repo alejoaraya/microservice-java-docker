@@ -40,23 +40,21 @@ public class ShoppingService implements IShoppingService {
     @Override
     @Transactional
     public ShoppingDTO create(ShoppingDTO shoppingDTO) {
-        Shopping newEntity = shoppingMapper.convertToModel(shoppingDTO);
-        Shopping entitySaved = shoppingRepository.save(newEntity);
+        // cartId exist
+        Shopping entitySaved = shoppingRepository.save(new Shopping(null, shoppingDTO.getDeliveryDate(), shoppingDTO.getCartId()));
+
+
         return shoppingMapper.convertToDTO(entitySaved);
     }
 
     @Override
     @Transactional
-    public ShoppingDTO update(Long idUpdate, ShoppingDTO productDTO) {
+    public ShoppingDTO update(Long idUpdate, ShoppingDTO shoppingDTO) {
         Shopping existingEntity = shoppingRepository.findById(idUpdate)
                 .orElseThrow(() -> new CustomException("Product ID not found", HttpStatus.NOT_FOUND));
-
-//        existingEntity.setName(productDTO.getName());
-//        existingEntity.setPrice(productDTO.getPrice());
-//        existingEntity.setBrand(productDTO.getBrand());
-//        existingEntity.setCode(productDTO.getCode());
-
-        Shopping updatedEntity = shoppingRepository.save(existingEntity);
+        Shopping newEntity = new Shopping(existingEntity.getId(),existingEntity.getDeliveryDate(), shoppingDTO.getCartId());
+        Shopping updatedEntity = shoppingRepository.save(newEntity);
+        
         return shoppingMapper.convertToDTO(updatedEntity);
     }
 

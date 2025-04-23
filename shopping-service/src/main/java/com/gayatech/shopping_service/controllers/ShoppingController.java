@@ -33,14 +33,14 @@ public class ShoppingController {
 //    }
 
     @PostMapping("/")
-    public ResponseEntity<ShoppingDTO> createProduct(@RequestBody ShoppingDTO productDTO){
-        ShoppingDTO newProduct = shoppingService.create(productDTO);
+    public ResponseEntity<ShoppingDTO> createProduct(@RequestBody ShoppingDTO shoppingDTO){
+        ShoppingDTO newProduct = shoppingService.create(shoppingDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ShoppingDTO> editProduct(@PathVariable Long id, @RequestBody ShoppingDTO productDTO){
-        return ResponseEntity.ok(shoppingService.update(id, productDTO));
+    public ResponseEntity<ShoppingDTO> editProduct(@PathVariable Long id, @RequestBody ShoppingDTO shoppingDTO){
+        return ResponseEntity.ok(shoppingService.update(id, shoppingDTO));
     }
 
     @DeleteMapping("/{id}")

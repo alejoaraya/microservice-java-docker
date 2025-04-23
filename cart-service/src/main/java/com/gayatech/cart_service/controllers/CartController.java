@@ -45,7 +45,11 @@ public class CartController {
 
     @PostMapping("/")
     public ResponseEntity<CartResponseDTO> createCart(@RequestBody CartRequestDTO cartRequestDTO){
+        System.out.println("POST METHOD");
+        System.out.println(cartRequestDTO.getIdProductList());
+        System.out.println("CREATE CART RESPONSE");
         CartResponseDTO cartResponseDTO = cartService.createCart(cartRequestDTO);
+        System.out.println("SEND RESPONSE");
         return ResponseEntity.status(HttpStatus.CREATED).body(cartResponseDTO);
     }
 
